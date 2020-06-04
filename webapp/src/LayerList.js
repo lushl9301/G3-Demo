@@ -8,7 +8,7 @@ class LayerList extends React.Component {
       <div className="layer-list part">
         <h2>{this.props.title}</h2>
         {this.props.layers.map(layer => (
-          <Layer onLayerClick={this.props.onLayerClick} hover={this.props.hover} layer={layer} key={layer.id} />
+          <Layer onLayerClick={this.props.onLayerClick} suffix={this.props.suffix} hover={this.props.hover} layer={layer} key={layer.id} />
         ))}
       </div>
     );

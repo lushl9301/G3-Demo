@@ -49,9 +49,9 @@ class App extends React.Component {
     return (
       <div className="App">
         <Source source={this.state.source} onChange={this.handleSourceChange} sources={this.availableSources} />
-        <LayerList layers={this.state.layers} onLayerClick={this.handleLayerRemove} hover="×" title="Current layers" />
+        <LayerList layers={this.state.layers} onLayerClick={this.handleLayerRemove} suffix="2.png" hover="×" title="Current layers" />
         <Submit onClick={this.handleSubmit} />
-        <LayerList layers={this.availableLayers} onLayerClick={this.handleLayerAdd} hover="+" title="Available layers" />
+        <LayerList layers={this.availableLayers} onLayerClick={this.handleLayerAdd} suffix="1.jpg" hover="+" title="Available layers" />
       </div>
     );
   }

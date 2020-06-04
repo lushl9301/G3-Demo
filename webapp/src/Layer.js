@@ -14,7 +14,7 @@ class Layer extends React.Component {
   render() {
     return (
       <div className="layer" onClick={this.handleLayerClick}>
-        <img src={require(`./images/${this.props.layer.layerNum}_1.jpg`)} alt={this.props.layer.name} />
+        <img src={require(`./images/${this.props.layer.layerNum}_${this.props.suffix}`)} alt={this.props.layer.name} />
         <span>{this.props.layer.name}</span>
         <div>{this.props.hover}</div>
       </div>
