@@ -7,6 +7,7 @@ class Submit extends React.Component {
       <div className="submit part">
         <h2>Submit</h2>
         <div onClick={this.props.onClick}>Submit</div>
+        <p>{this.props.text}</p>
       </div>
     );
   }
