@@ -10,15 +10,29 @@ class App extends React.Component {
     this.handleSourceChange = this.handleSourceChange.bind(this);
     this.handleLayerAdd = this.handleLayerAdd.bind(this);
     this.handleLayerRemove = this.handleLayerRemove.bind(this);
+    this.handleLayerChange = this.handleLayerChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {source: 0, layers: [], nextLayerId: 0};
   }
 
+  copyData(data) {
+    return {layerNum: data.layerNum, name: data.name, params: {...data.params}};
+  }
+
   availableSources = ["Select a source", "a", "b", "c", "d", "e"];
-  availableLayerNames = ["Dropout", "SparseMul", "GraphSum", "ReLU", "MatMul", "Output", "SoftMax", "MaxPool"];
-  availableLayers = this.availableLayerNames.map((name, index) => {
-    return {id: index, layerNum: index, name: name};
-  });
+  possibleLayers = [
+    {layerNum: 0, name: "Dropout", params: {test: ""}},
+    {layerNum: 1, name: "SparseMul", params: {test: ""}},
+    {layerNum: 2, name: "GraphSum", params: {test: ""}},
+    {layerNum: 3, name: "ReLU", params: {test: ""}},
+    {layerNum: 4, name: "MatMul", params: {test: "", test2: ""}},
+    {layerNum: 5, name: "Output"},
+    {layerNum: 6, name: "SoftMax"},
+    {layerNum: 7, name: "MaxPool"}
+  ];
+  availableLayers = this.possibleLayers.map((data, index) => (
+    {id: index, data: this.copyData(data)}
+  ));
 
   handleSourceChange(index) {
     this.setState({source: index});
@@ -26,7 +40,7 @@ class App extends React.Component {
 
   handleLayerAdd(layer) {
     this.setState({
-      layers: this.state.layers.concat({id: this.state.nextLayerId, layerNum: layer.layerNum, name: layer.name}),
+      layers: this.state.layers.concat({id: this.state.nextLayerId, data: this.copyData(layer.data)}),
       nextLayerId: this.state.nextLayerId + 1
     });
   }
@@ -37,10 +51,19 @@ class App extends React.Component {
     });
   }
 
+  handleLayerChange(layerToChange, newParams) {
+    const newLayer = {id: layerToChange.id, data: this.copyData(layerToChange.data)};
+    newLayer.data.params = newParams;
+
+    this.setState({
+      layers: this.state.layers.map(layer => layer.id === layerToChange.id ? newLayer : layer)
+    });
+  }
+
   handleSubmit() {
     const params = {
       dataset: this.availableSources[this.state.source],
-      layers: this.state.layers.map(layer => layer.name)
+      layers: this.state.layers.map(layer => layer.data)
     };
     const input = JSON.stringify(params);
     this.setState({text: input});
@@ -64,7 +87,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Source source={this.state.source} onChange={this.handleSourceChange} sources={this.availableSources} />
-        <LayerList layers={this.state.layers} onLayerClick={this.handleLayerRemove} suffix="2.png" hover="×" title="Current layers" />
+        <LayerList layers={this.state.layers} onLayerClick={this.handleLayerRemove} suffix="2.png" hover="×" title="Current layers" onLayerChange={this.handleLayerChange} />
         <Submit onClick={this.handleSubmit} text={this.state.text} />
         <LayerList layers={this.availableLayers} onLayerClick={this.handleLayerAdd} suffix="1.jpg" hover="+" title="Available layers" />
       </div>
