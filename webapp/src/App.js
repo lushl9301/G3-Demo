@@ -19,13 +19,13 @@ class App extends React.Component {
     return {layerNum: data.layerNum, name: data.name, params: {...data.params}};
   }
 
-  availableSources = ["Select a source", "a", "b", "c", "d", "e"];
+  availableSources = ["citeseer", "cora", "pubmed"];
   possibleLayers = [
-    {layerNum: 0, name: "Dropout", params: {test: ""}},
-    {layerNum: 1, name: "SparseMul", params: {test: ""}},
-    {layerNum: 2, name: "GraphSum", params: {test: ""}},
-    {layerNum: 3, name: "ReLU", params: {test: ""}},
-    {layerNum: 4, name: "MatMul", params: {test: "", test2: ""}},
+    {layerNum: 0, name: "Dropout", params: {rate: "0.5"}},
+    {layerNum: 1, name: "SparseMul", params: {height: "in_dim", width: "16", decay: "true"}},
+    {layerNum: 2, name: "GraphSum"},
+    {layerNum: 3, name: "ReLU"},
+    {layerNum: 4, name: "MatMul", params: {height: "16", width: "out_dim", decay: "false"}},
     {layerNum: 5, name: "Output"},
     {layerNum: 6, name: "SoftMax"},
     {layerNum: 7, name: "MaxPool"}

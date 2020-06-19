@@ -4,7 +4,7 @@
 
 .part {
   float: left;
-  height: 350px;
+  height: 380px;
   margin: 20px;
   border: 1px solid grey;
 }
@@ -50,8 +50,8 @@
 
 .layer label {
   display: block;
-  padding-top: 1px;
-  width: 90%;
+  padding: 1px 5px 0px 5px;
+  width: 110px;
   margin: auto;
   text-align: left;
 }
