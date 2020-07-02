@@ -4,7 +4,7 @@
 
 .part {
   float: left;
-  height: 380px;
+  height: 360px;
   margin: 20px;
   border: 1px solid grey;
 }
@@ -25,6 +25,7 @@
   display: inline-block;
   position: relative;
   vertical-align: top;
+  margin-top: -20px;
 }
 
 .layer img {
@@ -72,4 +73,8 @@
   padding: 10px;
   color: white;
   background-color: black;
+}
+
+.submit p {
+  white-space: pre-line;
 }
