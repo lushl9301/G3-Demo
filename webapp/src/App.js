@@ -151,6 +151,7 @@ class App extends React.Component {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = callback;
     xhr.send(input);
+    console.log(input);
   }
 
   render() {
