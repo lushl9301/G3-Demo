@@ -26,10 +26,12 @@
   position: relative;
   vertical-align: top;
   margin-top: -20px;
+  min-width: 120px;
 }
 
 .layer img {
   height: 200px;
+  margin-bottom: -20px;
 }
 
 .layer span {

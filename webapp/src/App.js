@@ -13,76 +13,119 @@ class App extends React.Component {
     this.handleLayerRemove = this.handleLayerRemove.bind(this);
     this.handleLayerChange = this.handleLayerChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getLayer = this.getLayer.bind(this);
+    this.castParams = this.castParams.bind(this);
     this.state = {source: 0, layers: [], nextLayerId: 0};
-  }
-
-  copyData(data) {
-    return {layerNum: data.layerNum, name: data.name, params: {...data.params}};
   }
 
   availableSources = ["citeseer", "cora", "pubmed"];
   availablePresetNames = ["No preset layers", "Preset"];
   possibleLayers = [
-    {layerNum: 0, name: "Dropout", params: {rate: "0.5"}},
-    {layerNum: 1, name: "SparseMul", params: {height: "in_dim", width: "16", decay: "true"}},
-    {layerNum: 2, name: "GraphSum"},
-    {layerNum: 3, name: "ReLU"},
-    {layerNum: 4, name: "MatMul", params: {height: "16", width: "out_dim", decay: "false"}},
-    {layerNum: 6, name: "SoftMax"},
-    {layerNum: 7, name: "MaxPool"},
+    {layerNum: 0, name: "Dropout", data: {name: "dropout"}, params: [
+        {name: "rate", type: "frac", default: 0.5}]},
+    {layerNum: 1, name: "SparseMul", data: {name: "sprmul"}, params: [
+        {name: "height", type: "dim", default: "in_dim"},
+        {name: "width", type: "dim", default: 16},
+        {name: "decay", type: "bool", default: true}]},
+    {layerNum: 2, name: "GraphSum", data: {name: "graph_sum"}},
+    {layerNum: 3, name: "ReLU", data: {name: "relu"}},
+    {layerNum: 4, name: "MatMul", data: {name: "mat_mul"}, params: [
+        {name: "height", type: "dim", default: 16},
+        {name: "width", type: "dim", default: "out_dim"},
+        {name: "decay", type: "bool", default: false}]},
+    {layerNum: 5, name: "Output", data: {name: "output"}},
+    {layerNum: 6, name: "SoftMax", data: {name: "softmax"}},
+    {layerNum: 7, name: "MaxPool", data: {name: "maxpool"}},
+    {layerNum: 8, name: "Input", data: {name: "input"}}
   ];
-  availableLayers = this.possibleLayers.map((data, index) => (
-    {id: index, data: this.copyData(data)}
-  ));
+
+  copyLayer(layer, id = layer.id) {
+    return {...layer, id: id, params: layer.params || [], data: {...layer.data}};
+  }
+
+  getLayer(name, id) {
+    const layer = this.copyLayer(this.possibleLayers.find(l => l.name === name), id);
+    this.resetLayerParams(layer);
+    return layer;
+  }
+
+  resetLayerParams(layer) {
+    layer.params.forEach(param => layer.data[param.name] = param.default ?? "");
+  }
+
+  availableLayers = this.possibleLayers
+    .filter(layer => !["Output", "Input"].includes(layer.name))
+    .map(this.copyLayer);
 
   handleSourceChange(index) {
     this.setState({source: index});
   }
 
   handlePresetChange(index) {
-    let layerData = [{layerNum: 8, name: "Input"}];
-    let layerNames = ["Dropout", "SparseMul", "GraphSum", "ReLU", "Dropout", "MatMul", "GraphSum"];
-    layerData.push(...layerNames.map(name => {
-      let data = {layerNum: 5, name: "Output"};
-      this.availableLayers.forEach(layer => {
-        if (layer.data.name === name) {
-          data = this.copyData(layer.data);
-        }
-      });
-      return data;
-    }));
+    const layerNames = ["Input", "Dropout", "SparseMul", "GraphSum", "ReLU", "Dropout", "MatMul", "GraphSum"];
     this.setState({
       preset: index,
-      layers: layerData.map((data, index) => ({id: index, data: this.copyData(data)}))
+      layers: layerNames.map(this.getLayer),
+      nextLayerId: layerNames.length
     });
   }
 
   handleLayerAdd(layer) {
+    const newLayer = this.copyLayer(layer, this.state.nextLayerId);
+    this.resetLayerParams(newLayer);
     this.setState({
-      layers: this.state.layers.concat({id: this.state.nextLayerId, data: this.copyData(layer.data)}),
+      preset: 0,
+      layers: this.state.layers.concat(newLayer),
       nextLayerId: this.state.nextLayerId + 1
     });
   }
 
   handleLayerRemove(layer) {
     this.setState({
+      preset: 0,
       layers: this.state.layers.filter(l => l.id !== layer.id)
     });
   }
 
-  handleLayerChange(layerToChange, newParams) {
-    const newLayer = {id: layerToChange.id, data: this.copyData(layerToChange.data)};
-    newLayer.data.params = newParams;
+  handleLayerChange(layerToChange, newData) {
+    const newLayer = this.copyLayer(layerToChange);
+    newLayer.data = newData;
 
     this.setState({
       layers: this.state.layers.map(layer => layer.id === layerToChange.id ? newLayer : layer)
     });
   }
 
+  cast(value, type) {
+    switch (type) {
+      case "frac":
+      case "dim":
+        const num = parseFloat(value);
+        return isNaN(num) ? value : num;
+      case "bool":
+        if (value === "true") return true;
+        if (value === "false") return false;
+        return value;
+      default:
+        return value;
+    }
+  }
+
+  castParams(layer) {
+    const newLayer = this.copyLayer(layer);
+    newLayer.params.forEach(param => {
+      const value = newLayer.data[param.name];
+      newLayer.data[param.name] = this.cast(value, param.type);
+    });
+    return newLayer;
+  }
+
   handleSubmit() {
+    const layers = this.state.layers.map(this.castParams);
+    this.setState({layers: layers});
     const params = {
       dataset: this.availableSources[this.state.source],
-      layers: this.state.layers.map(layer => layer.data)
+      layers: layers.map(layer => layer.data).concat({name: "cross_entropy"})
     };
     const input = JSON.stringify(params);
     this.setState({text: "Running..."});
@@ -91,7 +134,7 @@ class App extends React.Component {
       if (xhr.readyState === 4) {
         this.setState({text: xhr.responseText});
         if (xhr.status === 200) {
-          let response = JSON.parse(xhr.responseText);
+          const response = JSON.parse(xhr.responseText);
           this.setState({text:
             `Training accuracy: ${response.train_acc}
             Testing accuracy: ${response.test_acc}

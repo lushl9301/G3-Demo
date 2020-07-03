@@ -22,21 +22,21 @@ class Layer extends React.Component {
   handleLayerChange(name) {
     return (function (ev) {
       const value = ev.target.value;
-      const newParams = {...this.data.params, [name]: value};
-      this.props.onLayerChange(this.props.layer, newParams);
+      const newData = {...this.layer.data, [name]: value};
+      this.props.onLayerChange(this.layer, newData);
     }).bind(this);
   }
 
   render() {
-    this.data = this.props.layer.data;
+    this.layer = this.props.layer;
     return (
       <div className="layer" onClick={this.handleLayerClick}>
-        <img src={require(`./images/${this.data.layerNum}_${this.props.suffix}`)} alt={this.data.name} />
-        <span>{this.data.name}</span>
-        {this.props.onLayerChange && Object.entries(this.data.params).map(([name, value]) => (
-          <label key={name}>
-            {name}
-            <input onChange={this.handleLayerChange(name)} value={value} />
+        <img src={require(`./images/${this.layer.layerNum}_${this.props.suffix}`)} alt={this.layer.name} />
+        <span>{this.layer.name}</span>
+        {this.props.onLayerChange && this.layer.params.map(par => (
+          <label key={par.name}>
+            {par.name}
+            <input onChange={this.handleLayerChange(par.name)} value={this.layer.data[par.name]} />
           </label>
         ))}
         <div onClick={this.handleButtonClick}>{this.props.hover}</div>
