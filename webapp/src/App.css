@@ -53,7 +53,8 @@
 
 .layer label {
   display: block;
-  padding: 1px 5px 0px 5px;
+  clear: right;
+  padding: 1px 5px;
   width: 110px;
   margin: auto;
   text-align: left;
