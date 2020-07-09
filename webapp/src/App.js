@@ -161,8 +161,8 @@ class App extends React.Component {
           source={this.state.source} onSourceChange={this.handleSourceChange} sources={this.availableSources}
           preset={this.state.preset} onPresetChange={this.handlePresetChange} presetLayers={this.availablePresetNames}
         />
-        <LayerList layers={this.state.layers} onLayerClick={this.handleLayerRemove} suffix="2.png" hover="×" title="Current layers" onLayerChange={this.handleLayerChange} />
         <Submit onClick={this.handleSubmit} text={this.state.text} />
+        <LayerList layers={this.state.layers} onLayerClick={this.handleLayerRemove} suffix="2.png" hover="×" title="Current layers" onLayerChange={this.handleLayerChange} />
         <LayerList layers={this.availableLayers} onLayerClick={this.handleLayerAdd} suffix="1.jpg" hover="+" title="Available layers" />
       </div>
     );
