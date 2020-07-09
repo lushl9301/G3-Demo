@@ -19,7 +19,14 @@ class App extends React.Component {
   }
 
   availableSources = ["citeseer", "cora", "pubmed"];
-  availablePresetNames = ["No preset layers", "Preset"];
+  availablePresetNames = ["No preset layers", "Preset", "Preset 1", "Preset 2"];
+  presetLayers = [[],
+    [["Input"], ["Dropout"], ["SparseMul"], ["GraphSum"], ["ReLU"], ["Dropout"], ["MatMul"], ["GraphSum"]],
+    [["Input"], ["Dropout"], ["SparseMul", {width: "out_dim"}], ["GraphSum"]],
+    [["Input"], ["Dropout"], ["SparseMul"], ["GraphSum"],
+      ["ReLU"], ["Dropout"], ["MatMul", {width: 12}], ["GraphSum"],
+      ["ReLU"], ["Dropout"], ["MatMul", {height: 12}], ["GraphSum"]],
+  ];
   possibleLayers = [
     {layerNum: 0, name: "Dropout", data: {name: "dropout"}, params: [
         {name: "rate", type: "frac", default: 0.5}]},
@@ -43,9 +50,10 @@ class App extends React.Component {
     return {...layer, id: id, params: layer.params || [], data: {...layer.data}};
   }
 
-  getLayer(name, id) {
+  getLayer([name, data], id) {
     const layer = this.copyLayer(this.possibleLayers.find(l => l.name === name), id);
     this.resetLayerParams(layer);
+    layer.data = {...layer.data, ...data};
     return layer;
   }
 
@@ -62,12 +70,15 @@ class App extends React.Component {
   }
 
   handlePresetChange(index) {
-    const layerNames = ["Input", "Dropout", "SparseMul", "GraphSum", "ReLU", "Dropout", "MatMul", "GraphSum"];
-    this.setState({
-      preset: index,
-      layers: layerNames.map(this.getLayer),
-      nextLayerId: layerNames.length
-    });
+    if (index === "0") {
+      this.setState({preset: index});
+    } else {
+      this.setState({
+        preset: index,
+        layers: this.presetLayers[index].map(this.getLayer),
+        nextLayerId: this.presetLayers.length
+      });
+    }
   }
 
   handleLayerAdd(layer) {
