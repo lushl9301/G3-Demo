@@ -1,0 +1,22 @@
+{
+    "epoch": "100",
+    "train_loss": "1.270175",
+    "train_acc": "0.883333",
+    "val_loss": "1.665722",
+    "val_acc": "0.634000",
+    "time": "4.266080ms",
+    "test_loss": "1.242117",
+    "test_acc": "0.958333",
+    "avg_train_time": "6.333951ms",
+    "data_slice.fw_sprmul average time": "0.743ms",
+    "data_slice.bw_sprmul average time": "0.302ms",
+    "data_slice.fw_graphsum average time": "0.842ms",
+    "data_slice.bw_graphsum average time": "0.447ms",
+    "data_slice.fw_dropout average time": "0.043ms",
+    "data_slice.bw_dropout average time": "0.013ms",
+    "data_slice.fw_relu average time": "0.028ms",
+    "data_slice.bw_relu average time": "0.009ms",
+    "data_slice.fw_matmul average time": "0.079ms",
+    "data_slice.bw_matmul average time": "0.384ms",
+    "data_slice.fw_loss average time": "0.408ms"
+}
