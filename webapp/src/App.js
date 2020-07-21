@@ -18,7 +18,7 @@ class App extends React.Component {
     this.state = {source: 0, layers: [], nextLayerId: 0};
   }
 
-  availableSources = ["citeseer", "cora", "pubmed"];
+  availableSources = ["citeseer", "cora", "pubmed", "mexico"];
   availablePresetNames = ["No preset layers", "Preset", "Preset 1", "Preset 2"];
   presetLayers = [[],
     [["Input"], ["Dropout"], ["SparseMul"], ["GraphSum"], ["ReLU"], ["Dropout"], ["MatMul"], ["GraphSum"]],
