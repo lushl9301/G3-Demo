@@ -1,5 +1,10 @@
 # Predicting future COVID-19 cases in different regions of Singapore using a Graph Neural Network (GNN) model
 
+This work is mainly done by Karan.
+
+
+The original github repo link is https://github.com/aang114/COVID-19-in-Singapore
+
 ### GNN Model Used
 
 To predict future COVID-19 cases in Singapore, I had decided to replicate an already-existing graph structure and GNN model created by five University of Illinois’ final-year undergraduate students (https://github.com/Inerix/gnn_covid19_spread) for predicting future COVID-19 cases in different states of the United States and Canada - since it was able to capturing general trends in each state quite well, albeit with some volatility. 

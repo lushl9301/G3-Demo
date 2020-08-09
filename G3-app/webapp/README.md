@@ -1,4 +1,12 @@
+# G3 Webapp
+
+This work is mainly done by Low Ee Ter
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+
 
 ## Available Scripts
 
