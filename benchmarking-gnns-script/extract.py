@@ -43,21 +43,20 @@ class Dataset:
             for n in g.nodes():
                 f.write(' '.join(str(e.item()) for e in g.out_edges(n)[1]) + '\n')
 
-    def write_feature(self, file_name, feat_format = lambda feat: return str(feat) + ':1'):
+    def write_feature(self, file_name, feat_format):
         g, l = self.collate_all()
         zipped = torch.transpose(torch.stack((l, g.ndata['feat'])), 0, 1)
         with open(file_name, 'w') as f:
             for label, feat in zipped:
                 f.write(str(label.item()) + ' ' + feat_format(feat.item()) + '\n')
 
-    def write_feature_embed(self, file_name):
-        g, l = self.collate_all()
-        self.embedding = torch.nn.Embedding(self.in_dim, dim)
-        embed = g.ndata['feat']
-        zipped = torch.transpose(torch.stack((l, )), 0, 1)
-        with open(file_name, 'w') as f:
-            for label, feat in zipped:
-                f.write(str(label.item()) + ' ' + feat_format(feat.item()) + '\n')
+    def one_hot(_): return lambda feat: str(feat) + ':1'
+    def embed(self, dim=16):
+        embedding = torch.nn.Embedding(self.in_dim, dim)
+        def get_str(feat):
+            e = embedding(torch.tensor(feat))
+            return ' '.join(str(num) + ':' + str(val.item()) for num, val in enumerate(e))
+        return get_str
 
     def write_split(self, file_name):
         graphs = self.batch()
